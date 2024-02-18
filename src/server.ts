@@ -25,10 +25,24 @@ app.get('/verification', (req: any, res: any) => {
 
         const address: string = req.query.address! as string;
         const times = req.query.times! ? req.query.times! : 1;
+        const from = req.query.from! ? req.query.from! : '';
+        const to = req.query.to! ? req.query.to! : '';
 
         if (address) {
 
+            const matchStage: any = {};
+
+            if (from !== '') {
+                matchStage.originalDomain = parseInt(from);
+            }
+            if (to !== '') {
+                matchStage.destinationDomain = parseInt(to);
+            }
+
             const pipeline = [
+                {
+                    $match: matchStage
+                },
                 {
                     $group: {
                         _id: "$sender", // Group by sender
